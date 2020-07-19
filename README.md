@@ -1,2 +1,2 @@
 # CyanModSRC
-Only use for Personal usage, no redistributing
+Only use for Personal usage
