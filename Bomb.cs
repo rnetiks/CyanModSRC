@@ -15,8 +15,10 @@ public class Bomb : Photon.MonoBehaviour
     public GameObject myExplosion;
     public float SmoothingDelay = 10f;
 
+
     public void Awake()
     {
+
         if (base.photonView != null)
         {
             float num;

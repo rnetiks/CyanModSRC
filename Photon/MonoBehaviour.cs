@@ -4,7 +4,7 @@
 
     public class MonoBehaviour : UnityEngine.MonoBehaviour
     {
-        public PhotonView networkView
+        public new PhotonView networkView
         {
             get
             {

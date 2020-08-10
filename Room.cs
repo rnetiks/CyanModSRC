@@ -48,13 +48,13 @@ public class Room : RoomInfo
     public override string ToString()
     { return string.Format("Room: '{0}' {1},{2} {4}/{3} players.", new object[] { base.nameField, !base.visibleField ? "hidden" : "visible", !base.openField ? "closed" : "open", base.maxPlayersField, this.playerCount }); }
 
-    public string ToStringFull()
+    public new string ToStringFull()
     { return string.Format("Room: '{0}' {1},{2} {4}/{3} players.\ncustomProps: {5}", new object[] { base.nameField, !base.visibleField ? "hidden" : "visible", !base.openField ? "closed" : "open", base.maxPlayersField, this.playerCount, base.customProperties.ToStringFull() }); }
 
     public bool autoCleanUp
     { get { return base.autoCleanUpField; } }
 
-    public int maxPlayers
+    public new int maxPlayers
     {
         get
         {
@@ -82,7 +82,7 @@ public class Room : RoomInfo
         }
     }
 
-    public string name
+    public new string name
     {
         get
         {
@@ -95,7 +95,7 @@ public class Room : RoomInfo
         }
     }
 
-    public bool open
+    public new bool open
     {
         get
         {
@@ -118,7 +118,7 @@ public class Room : RoomInfo
         }
     }
 
-    public int playerCount
+    public new int playerCount
     {
         get
         {
@@ -132,7 +132,7 @@ public class Room : RoomInfo
 
     public string[] propertiesListedInLobby { get; private set; }
 
-    public bool visible
+    public new bool visible
     {
         get
         {

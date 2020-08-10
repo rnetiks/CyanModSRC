@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class CameraForLeftEye : MonoBehaviour
 {
-    private Camera camera;
+    private new Camera camera;
     private Camera cameraRightEye;
     public GameObject rightEye;
 

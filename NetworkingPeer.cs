@@ -2986,7 +2986,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
     }
     public void AddLocalCODE(byte code)
     {
-        if (isInformationEvent && code != null)
+        if (isInformationEvent)
         {
             if (mLocalActor.eve == null)
             {

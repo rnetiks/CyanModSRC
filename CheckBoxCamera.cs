@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class CheckBoxCamera : MonoBehaviour
 {
-    public CAMERA_TYPE camera;
+    public new CAMERA_TYPE camera;
 
     private void OnSelectionChange(bool yes)
     {

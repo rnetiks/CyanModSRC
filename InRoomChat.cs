@@ -1259,7 +1259,7 @@ public class InRoomChat : UnityEngine.MonoBehaviour
             m = false;
             example = ex;
         }
-        public string ToString()
+        public override string ToString()
         {
             return "Command: " + command + " Description: " + description + " Only MC: " + m + " Example: " + example;
         }

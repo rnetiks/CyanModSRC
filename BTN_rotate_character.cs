@@ -5,7 +5,7 @@ using System.IO;
 
 public class BTN_rotate_character : MonoBehaviour
 {
-    public GameObject camera;
+    public new GameObject camera;
     public float distance = 3f;
     public GameObject hero;
     private bool isRotate;

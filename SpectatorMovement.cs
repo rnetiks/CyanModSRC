@@ -124,7 +124,6 @@ public class SpectatorMovement : MonoBehaviour
         {
             float MyAnglex = 0;
             float MyAngley = 0;
-            bool flag = false;
             if (Input.GetKey(KeyCode.H))
             {
                 MyAnglex = speed_rot[3] * ((250f - (Screen.width / 2)) / Screen.width);

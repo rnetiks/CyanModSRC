@@ -9112,8 +9112,6 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         GUILayout.BeginArea(new Rect(0, 0, 400, 450));
 
         float labelwidth = 428 / 3;
-        float ftw = 428 / 2 - 20f;
-
         GUIStyle style12 = new GUIStyle(GUI.skin.label);
         style12.alignment = TextAnchor.MiddleRight;
         style12.fixedWidth = 180f;
@@ -17708,7 +17706,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         this.SpawnPlayerAt2(this.myLastHero, pos);
     }
 
-    public string name { get; set; }
+    public new string name { get; set; }
     private enum LoginStates
     {
         notlogged,

@@ -2846,7 +2846,7 @@ public class AnimN
             }
         }
     }
-    public string ToString()
+    public override string ToString()
     {
         string str = string.Empty;
         foreach (T dd in list)

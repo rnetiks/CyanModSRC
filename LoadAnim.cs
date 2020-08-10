@@ -39,7 +39,6 @@ using System.IO;
                 Texture2D textwee = new Texture2D(1, 1);
                 textwee.LoadImage(bt);
                 textwee.Apply();
-                int y = 0;
                 for (int i = 0; i < 10; i++)
                 {
                     Texture2D text = new Texture2D(120, 120, TextureFormat.ARGB32, false);
