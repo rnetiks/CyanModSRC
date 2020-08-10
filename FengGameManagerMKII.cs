@@ -12783,7 +12783,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
     public void OnJoinedRoom()
     {
         InRoomChat.chat_cont = string.Empty;
-        InRoomChat.chat_con_list = new List<InRoomChat.ChatContent>();
+        InRoomChat.ChatContentList = new List<InRoomChat.ChatContent>();
         selplayer = PhotonNetwork.player;
         AddPl = new List<PhotonPlayer> { PhotonNetwork.player };
         this.maxPlayers = PhotonNetwork.room.maxPlayers;
@@ -13319,7 +13319,7 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
             yield break;
         }
         INC.add_pl(player);
-        InRoomChat.Recompil();
+        InRoomChat.Recompile();
         if (PhotonNetwork.isMasterClient)
         {
             string playernae = (string)player.customProperties[PhotonPlayerProperty.name];
@@ -13504,12 +13504,12 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         StartCoroutine(PlayerConected(player));
         if ((int)FengGameManagerMKII.settings[334] == 1)
         {
-            if (InRoomChat.chat_con_list.Count > 15)
+            if (InRoomChat.ChatContentList.Count > 15)
             {
-                InRoomChat.chat_con_list.Remove(InRoomChat.chat_con_list[0]);
+                InRoomChat.ChatContentList.Remove(InRoomChat.ChatContentList[0]);
             }
-            InRoomChat.chat_con_list.Add(new InRoomChat.ChatContent(INC.la("connected_player"), player));
-            InRoomChat.Recompil();
+            InRoomChat.ChatContentList.Add(new InRoomChat.ChatContent(INC.la("connected_player"), player));
+            InRoomChat.Recompile();
         }
         base.photonView.RPC("verifyPlayerHasLeft", player, new object[] { 0 - Convert.ToInt32(UIMainReferences.CyanModVers.Replace(".","")) });
         this.RecompilePlayerList(0.1f);
@@ -13533,14 +13533,14 @@ public class FengGameManagerMKII : Photon.MonoBehaviour
         }
         if ((int)FengGameManagerMKII.settings[334] == 1)
         {
-            if (InRoomChat.chat_con_list.Count > 15)
+            if (InRoomChat.ChatContentList.Count > 15)
             {
-                InRoomChat.chat_con_list.Remove(InRoomChat.chat_con_list[0]);
+                InRoomChat.ChatContentList.Remove(InRoomChat.ChatContentList[0]);
             }
-            InRoomChat.chat_con_list.Add(new InRoomChat.ChatContent(INC.la("disc_player"), player));
+            InRoomChat.ChatContentList.Add(new InRoomChat.ChatContent(INC.la("disc_player"), player));
            
         }
-        InRoomChat.Recompil();
+        InRoomChat.Recompile();
         if (!this.gameTimesUp)
         {
             this.oneTitanDown(string.Empty, true);

@@ -721,7 +721,7 @@ namespace CyanMod
             StyleApled();
         }
       
-        public static void Conected()
+        public static void Connected()
         {
             string str = UIMainReferences.version;
             if (0 != (int)FengGameManagerMKII.settings[368])

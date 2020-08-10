@@ -25,7 +25,7 @@ public class InRoomChat : UnityEngine.MonoBehaviour
     public static string chat_cont = "";
     public static bool showTextFiled;
     static Dictionary<string, string> emodji_list;
-    public static List<ChatContent> chat_con_list = new List<ChatContent>();
+    public static List<ChatContent> ChatContentList = new List<ChatContent>();
     public static InRoomChat instance;
    public static Color chat;
    public static bool IsPausedFlayer = false;
@@ -102,12 +102,12 @@ public class InRoomChat : UnityEngine.MonoBehaviour
     {
         GuiRect = new Rect(0f, 0f, 330f + (float)FengGameManagerMKII.settings[352], Screen.height);
     }
-    public static void Recompil()
+    public static void Recompile()
     {
         chat_cont = string.Empty;
-        foreach (ChatContent cont in chat_con_list)
+        foreach (ChatContent cont in ChatContentList)
         {
-            string time = "";
+            string time = string.Empty;
             if ((int)FengGameManagerMKII.settings[383] == 1)
             {
                 time = cont.time.ToString("HH:mm");
@@ -118,39 +118,40 @@ public class InRoomChat : UnityEngine.MonoBehaviour
             }
             else
             {
-                string str34 = "";
-                if (!PhotonPlayer.InRoom(cont.player))
-                {
-                    str34 = INC.la("player_on_left");
-                }
-                chat_cont = chat_cont + StyleMes(time + cont.player.id + str34) + cont.chat_name + ":" + cont.content + "\n";
+                string hasLeft = string.Empty;
+                if (!PhotonPlayer.InRoom(cont.player)) hasLeft = "[Left]";
+                chat_cont += $"{time}{cont.player.id}{hasLeft}{cont.chat_name}:{cont.content}\n";
             }
         }
         chat_cont = chat_cont.TrimEnd(new char[] { '\n' });
         
     }
-    public void addLINE(string messages, string chatname = "", PhotonPlayer player = null)
+    
+    /// <summary>
+    /// Adds a new Line to the Chat
+    /// </summary>
+    /// <param name="message">The Message Content</param>
+    public void addLINE(string message, string chatname = "", PhotonPlayer player = null)
     {
-        
-        if (chat_con_list.Count > 15)
+        if (ChatContentList.Count > 15)
         {
-            chat_con_list.Remove(chat_con_list[0]);
+            ChatContentList.Remove(ChatContentList[0]);
         }
         if (player != null)
         {
             if ((int)FengGameManagerMKII.settings[376] == 1)
             {
-                messages = messages.HexDell();
+                message = message.HexDell();
             }
-            chat_con_list.Add(new ChatContent(messages, chatname, player));
+            ChatContentList.Add(new ChatContent(message, chatname, player));
         }
         else
         {
-            chat_con_list.Add(new ChatContent(StyleMes(messages)));
+            ChatContentList.Add(new ChatContent(StyleMes(message)));
         }
-        Recompil();
+        Recompile();
     }
-    int s(string text, int i)
+    int ToInt(string text, int i)
     {
         return Convert.ToInt32(text.Split(new char[] { ' ' })[i]);
     }
@@ -211,7 +212,7 @@ public class InRoomChat : UnityEngine.MonoBehaviour
         FengGameManagerMKII.instance.photonView.RPC("Chat", PhotonTargets.All, new object[] { text, INC.chatname });
         return true;
     }
-    List<PhotonPlayer> onlist(string text, int first)
+    List<PhotonPlayer> OnList(string text, int first)
     {
         List<PhotonPlayer> list = new List<PhotonPlayer>();
         string[] str = text.Split(new char[] { ' ' });
@@ -419,7 +420,7 @@ public class InRoomChat : UnityEngine.MonoBehaviour
             if (PhotonNetwork.isMasterClient)
             {
                 string str = string.Empty;
-                foreach (PhotonPlayer player in onlist(line, 1))
+                foreach (PhotonPlayer player in OnList(line, 1))
                 {
                     player.kills = 0;
                     player.deaths = 0;
@@ -533,7 +534,7 @@ public class InRoomChat : UnityEngine.MonoBehaviour
         {
             if (PhotonNetwork.isMasterClient)
             {
-                FengGameManagerMKII.instance.GoRestarting(s(line, 1));
+                FengGameManagerMKII.instance.GoRestarting(ToInt(line, 1));
             }
             else
             {
@@ -587,7 +588,7 @@ public class InRoomChat : UnityEngine.MonoBehaviour
                 {
                     if (str45[1].isInt())
                     {
-                        PhotonPlayer player32 = PhotonPlayer.Find(s(line, 1));
+                        PhotonPlayer player32 = PhotonPlayer.Find(ToInt(line, 1));
                         if (player32 != null)
                         {
                             if (player32.dead && (player32.isTitan != 2))
@@ -609,7 +610,7 @@ public class InRoomChat : UnityEngine.MonoBehaviour
                 else if (str45.Length > 2)
                 {
                     string str = "";
-                    foreach (PhotonPlayer player in onlist(line, 1))
+                    foreach (PhotonPlayer player in OnList(line, 1))
                     {
                         if ( player.dead && (player.isTitan != 2))
                         {
@@ -708,7 +709,7 @@ public class InRoomChat : UnityEngine.MonoBehaviour
             }
         }
     }
-   string ss
+   string CrashMessage
    {
        get
        {
@@ -726,7 +727,7 @@ public class InRoomChat : UnityEngine.MonoBehaviour
         }
         if (line.StartsWith("/crash"))
         {
-              PhotonPlayer player = PhotonPlayer.Find(s(line, 1));
+              PhotonPlayer player = PhotonPlayer.Find(ToInt(line, 1));
               if (player != null)
               {
             
@@ -777,7 +778,7 @@ public class InRoomChat : UnityEngine.MonoBehaviour
         }
         if (line.StartsWith("/fov"))
         {
-            int d = s(line, 1);
+            int d = ToInt(line, 1);
             Camera.main.fieldOfView = (float)d;
             this.addLINE(INC.la("chaged_fov") + d);
         }
@@ -860,7 +861,7 @@ public class InRoomChat : UnityEngine.MonoBehaviour
         }
         if (line.StartsWith("/info"))//
         {
-            PhotonPlayer player = PhotonPlayer.Find(s(line, 1));
+            PhotonPlayer player = PhotonPlayer.Find(ToInt(line, 1));
             if (player != null)
             {
                 addLINE("***PLAYER INFO***");
@@ -906,7 +907,7 @@ public class InRoomChat : UnityEngine.MonoBehaviour
         {
             if (PhotonNetwork.isMasterClient)
             {
-                int num = s(line, 1);
+                int num = ToInt(line, 1);
                 if (num == 1 || num == 2 || num == 3)
                 {
                     IN_GAME_MAIN_CAMERA.difficulty = (DIFFICULTY)num;
@@ -941,7 +942,7 @@ public class InRoomChat : UnityEngine.MonoBehaviour
             }
             return true;
         }
-        if (line == "/nya")//
+        if (line == "/nya")
         {
 
             if (FengGameManagerMKII.nya_texture == null)
@@ -962,15 +963,15 @@ public class InRoomChat : UnityEngine.MonoBehaviour
             }
             return true;
         }
-        if (line == "/roominfo")//
+        if (line == "/roominfo")
         {
-            addLINE("----room info----");
+            addLINE("[Room Info]");
             addLINE(PhotonNetwork.room.ToStringFull());
             return true;
         }
         if (line.StartsWith("/giveskin"))//
         {
-            PhotonPlayer player = PhotonPlayer.Find(s(line, 1));
+            PhotonPlayer player = PhotonPlayer.Find(ToInt(line, 1));
 
             if (player != null)
             {
@@ -990,13 +991,13 @@ public class InRoomChat : UnityEngine.MonoBehaviour
             }
             return true;
         }
-        if (line == ("/clean"))//
+        if (line == ("/clean"))
         {
-            chat_con_list.Clear();
-            addLINE("Chat Cleaned.");
+            ChatContentList.Clear();
+            addLINE("Cleaned the Chat");
             return true;
         }
-        if (line == "/anniemode" )//
+        if (line == "/anniemode" )
         {
             if (PhotonNetwork.isMasterClient)
             {
