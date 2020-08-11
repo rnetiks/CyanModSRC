@@ -6896,7 +6896,7 @@ public class HERO : Photon.MonoBehaviour
     {
         if (this.skillId == "bomb")
         {
-            if (FengGameManagerMKII.inputRC.isInputCustomKeyDown(InputCode.custom_attack1) && (this.skillCDDuration <= 0f))
+            if (FengGameManagerMKII.inputRC.isInputCustomKeyDown(InputCode.custom_attack1))
             {
                 if ((this.myBomb != null) && !this.myBomb.disabled)
                 {

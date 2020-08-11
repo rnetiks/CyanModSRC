@@ -6,7 +6,7 @@ public class BTN_Server_ASIA : MonoBehaviour
     private void OnClick()
     {
         FengGameManagerMKII.settings[399] = 2;
-        CyanMod.INC.Conected();
+        CyanMod.INC.Connected();
     }
 }
 

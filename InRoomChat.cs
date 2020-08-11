@@ -10,6 +10,7 @@ using CyanMod;
 using System.IO;
 using System.Text.RegularExpressions;
 using ExitGames.Client.Photon.Lite;
+using Object = System.Object;
 
 public class InRoomChat : UnityEngine.MonoBehaviour
 {
@@ -38,44 +39,41 @@ public class InRoomChat : UnityEngine.MonoBehaviour
     {
         instance = null;
     }
+    
     public static string StyleMes(string newLine)
     {
         string str = newLine;
-        if ((int)FengGameManagerMKII.settings[375] == 1)
-        {
-            str = "<i>" + str + "</i>";
-        }
-        else if ((int)FengGameManagerMKII.settings[375] == 2)
-        {
-            str = "<b>" + str + "</b>";
-        }
-        else if ((int)FengGameManagerMKII.settings[375] == 3)
-        {
-            str = "<b><i>" + str + "</i></b>";
+        switch ((int)FengGameManagerMKII.settings[375]) {
+            case 1:
+                str = $"<i>{str}</i>";
+                break;
+            case 2:
+                str = $"<b>{str}</b>";
+                break;
+            case 3:
+                str = $"<b><i>{str}</i></b>";
+                break;
         }
         return "<color=#" + ((Color)FengGameManagerMKII.settings[369]).HexConverter() + ">" + str + "</color>";
     }
     public void resetkdall()
     {
          if (PhotonNetwork.isMasterClient)
-            {
-                PhotonPlayer[] playerList = PhotonNetwork.playerList;
-                for (int i = 0; i < playerList.Length; i++)
-                {
-                    PhotonPlayer photonPlayer = playerList[i];
-                  
-                    photonPlayer.kills = 0;
-                    photonPlayer.deaths = 0;
-                    photonPlayer.max_dmg = 0;
-                    photonPlayer.total_dmg = 0;
-                }
-                cext.mess(INC.la("all_rev_stats"));
-            }
-            else
-            {
-                addLINE(INC.la("error_nomaster"));
-            }
-            return;
+         {
+             PhotonPlayer[] playerList = PhotonNetwork.playerList;
+             foreach (var photonPlayer in playerList) {
+                 photonPlayer.kills = 0;
+                 photonPlayer.deaths = 0;
+                 photonPlayer.max_dmg = 0;
+                 photonPlayer.total_dmg = 0;
+             }
+             cext.mess(INC.la("all_rev_stats"));
+         }
+         else
+         {
+             addLINE(INC.la("error_nomaster"));
+         }
+         return;
     }
     public void reviveall()
     {
@@ -233,6 +231,16 @@ public class InRoomChat : UnityEngine.MonoBehaviour
     {
         addLINE(INC.la("break_argument") + text);
     }
+
+    public static string[] ArrayFrom(string[] s, int pos) {
+        int dpos = pos;
+        string[] r = new string[s.Length-pos];
+        for (int i = pos; i < s.Length; i++) {
+            r[i - dpos] = s[i];
+        }
+
+        return r;
+    }
    public void Command(string line = "")
     {
         if (FengGameManagerMKII.RCEvents.ContainsKey("OnChatInput"))
@@ -259,6 +267,43 @@ public class InRoomChat : UnityEngine.MonoBehaviour
             return;
         }
         line = line.Trim();
+        try {
+            Type type = typeof(Commands);
+            var methods = type.GetMethods();
+            foreach (var method in methods) {
+                CommandAttribute attr = (CommandAttribute) method.GetCustomAttributes(typeof(CommandAttribute), true)[0];
+                string v = attr.Value;
+                if (!line.StartsWith(v)) continue;
+                var param = method.GetParameters();
+
+                string[] args = line.Split();
+                var d = args.ToList();
+                d.RemoveAt(0);
+                args = d.ToArray();
+                object[] obj = new object[args.Length];
+                addLINE($"Args Length: {args.Length}");
+                for (int i = 0; i < param.Length; i++) {
+                    Type paramType = param[i].ParameterType;
+                    if (paramType == typeof(string))
+                        obj[i] = args[i];
+                    else if (paramType == typeof(bool))
+                        obj[i] = bool.Parse(args[i]);
+                    else if(paramType == typeof(byte))
+                        obj[i] = byte.Parse(args[i]);
+                    else if(paramType == typeof(short))
+                        obj[i] = short.Parse(args[i]);
+                    else if(paramType == typeof(int))
+                        obj[i] = int.Parse(args[i]);
+                    else if(paramType == typeof(long))
+                        obj[i] = long.Parse(args[i]);
+                }
+                method.Invoke(null, obj);
+                break;
+            }
+        }
+        catch (Exception e) {
+            addLINE(e.Message);
+        }
         if (MyCommands(line))
         {
             return;
@@ -308,75 +353,62 @@ public class InRoomChat : UnityEngine.MonoBehaviour
             return;
         }
 
-        else if (line == "/pause")
-        {
-            if (PhotonNetwork.isMasterClient)
-            {
-                FengGameManagerMKII.instance.photonView.RPC("pauseRPC", PhotonTargets.All, new object[] { true });
-                cext.mess(INC.la("to_paused_game"));
-            }
-            else
-            {
-                this.addLINE(INC.la("error_nomaster"));
-            }
-
-            return;
-        }
-        else if (line == "/unpause")
-        {
-            if (PhotonNetwork.isMasterClient)
-            {
-                FengGameManagerMKII.instance.photonView.RPC("pauseRPC", PhotonTargets.All, new object[] { false });
-                cext.mess(INC.la("in_paused_game"));
-            }
-            else
-            {
-                this.addLINE(INC.la("error_nomaster"));
-            }
-
-            return;
-        }
-        else if (line == "/checklevel")
-        {
-            PhotonPlayer[] playerList = PhotonNetwork.playerList;
-            for (int i = 0; i < playerList.Length; i++)
-            {
-                PhotonPlayer photonPlayer = playerList[i];
-                if (photonPlayer.isMasterClient)
+        switch (line) {
+            case "/pause": {
+                if (PhotonNetwork.isMasterClient)
                 {
-                    this.addLINE(photonPlayer.currentLevel);
+                    FengGameManagerMKII.instance.photonView.RPC("pauseRPC", PhotonTargets.All, new object[] { true });
+                    cext.mess(INC.la("to_paused_game"));
                 }
-            }
-
-            return;
-        }
-        else if (line == "/isrc")
-        {
-            if (FengGameManagerMKII.masterRC)
-            {
-                this.addLINE("is RC");
-            }
-            else
-            {
-                this.addLINE("not RC");
-            }
-
-            return;
-        }
-
-        if (line == "/ignorelist")
-        {
-            using (List<int>.Enumerator enumerator = FengGameManagerMKII.ignoreList.GetEnumerator())
-            {
-                while (enumerator.MoveNext())
+                else
                 {
-                    int current = enumerator.Current;
-                    this.addLINE(current.ToString());
+                    this.addLINE(INC.la("error_nomaster"));
                 }
-            }
 
-            return;
+                return;
+            }
+            case "/unpause": {
+                if (PhotonNetwork.isMasterClient)
+                {
+                    FengGameManagerMKII.instance.photonView.RPC("pauseRPC", PhotonTargets.All, new object[] { false });
+                    cext.mess(INC.la("in_paused_game"));
+                }
+                else
+                {
+                    this.addLINE(INC.la("error_nomaster"));
+                }
+
+                return;
+            }
+            case "/checklevel": {
+                PhotonPlayer[] playerList = PhotonNetwork.playerList;
+                foreach (var photonPlayer in playerList) {
+                    if (photonPlayer.isMasterClient)
+                    {
+                        this.addLINE(photonPlayer.currentLevel);
+                    }
+                }
+
+                return;
+            }
+            case "/isrc": {
+                this.addLINE(FengGameManagerMKII.masterRC ? "is RC" : "not RC");
+
+                return;
+            }
+            case "/ignorelist": {
+                using (var enumerator = FengGameManagerMKII.ignoreList.GetEnumerator())
+                {
+                    while (enumerator.MoveNext())
+                    {
+                        addLINE(enumerator.Current.ToString());
+                    }
+                }
+
+                return;
+            }
         }
+
         if (line.StartsWith("/room"))
         {
             if (PhotonNetwork.isMasterClient)
@@ -640,74 +672,9 @@ public class InRoomChat : UnityEngine.MonoBehaviour
             {
                 this.addLINE(INC.la("error_nomaster"));
             }
-
-            return;
-        }
-        else if (line.StartsWith("/unban"))
-        {
-            if (FengGameManagerMKII.OnPrivateServer)
-            {
-                FengGameManagerMKII.ServerRequestUnban(line.Substring(7));
-            }
-            else if (PhotonNetwork.isMasterClient)
-            {
-                int num4 = Convert.ToInt32(line.Substring(7));
-                if (FengGameManagerMKII.banHash.ContainsKey(num4))
-                {
-                    FengGameManagerMKII.banHash.Remove(num4);
-                    cext.mess((string)FengGameManagerMKII.banHash[num4] + INC.la("unbanned_server"));
-                }
-                else
-                {
-                    this.addLINE(INC.la("player_not_fond"));
-                }
-            }
-            else
-            {
-                this.addLINE(INC.la("error_nomaster"));
-            }
-
-            return;
-        }
-        else if (line.StartsWith("/rules"))
-        {
-            this.addLINE(INC.la("current_gamemodes"));
-
-            foreach (string lines in RCSettings.rules)
-            {
-                this.addLINE(lines);
-            }
-
-            return;
-        }
-        else if (line.StartsWith("/kick"))
-        {
-            CommandOnPlayer.kick(PhotonPlayer.Find(Convert.ToInt32(line.Substring(6))));
-
-            return;
-        }
-        else if (line.StartsWith("/ban"))
-        {
-            if (line == "/banlist")
-            {
-                this.addLINE(INC.la("list_of_banned_players"));
-                using (Dictionary<object, object>.KeyCollection.Enumerator enumerator3 = FengGameManagerMKII.banHash.Keys.GetEnumerator())
-                {
-                    while (enumerator3.MoveNext())
-                    {
-                        int num5 = (int)enumerator3.Current;
-                        this.addLINE(string.Concat(new string[] { "", Convert.ToString(num5), ":", (string)FengGameManagerMKII.banHash[num5], "" }));
-                    }
-                }
-            }
-            else
-            {
-                CommandOnPlayer.ban(PhotonPlayer.Find(Convert.ToInt32(line.Substring(5))));
-
-                return;
-            }
         }
     }
+<<<<<<< Updated upstream
    string ss
    {
        get
@@ -716,6 +683,10 @@ public class InRoomChat : UnityEngine.MonoBehaviour
        }
    }
     public bool MyCommands(string line)
+=======
+   
+   public bool MyCommands(string line)
+>>>>>>> Stashed changes
     {
         if (line.StartsWith("/check"))
         {

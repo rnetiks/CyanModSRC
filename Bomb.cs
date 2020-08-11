@@ -70,30 +70,28 @@ public class Bomb : Photon.MonoBehaviour
         this.disabled = true;
         base.rigidbody.velocity = Vector3.zero;
         Vector3 position = base.transform.position;
-        this.myExplosion = PhotonNetwork.Instantiate("RCAsset/BombExplodeMain", position, Quaternion.Euler(0f, 0f, 0f), 0);
+        this.myExplosion = PhotonNetwork.Instantiate("RCAsset/BombExplodeMain", position,
+            Quaternion.Euler(0f, 0f, 0f), 0);
         foreach (HERO hero in FengGameManagerMKII.instance.heroes)
         {
             GameObject gameObject = hero.gameObject;
-            if (((Vector3.Distance(gameObject.transform.position, position) < radius) && !gameObject.GetPhotonView().isMine) && !hero.bombImmune)
+            if (((!(Vector3.Distance(gameObject.transform.position, position) < radius)) ||
+                 gameObject.GetPhotonView().isMine) || hero.bombImmune) continue;
+            PhotonPlayer owner = gameObject.GetPhotonView().owner;
+            if (RCSettings.teamMode > 0)
             {
-                PhotonPlayer owner = gameObject.GetPhotonView().owner;
-                if (RCSettings.teamMode > 0)
-                {
-                    int num = (PhotonNetwork.player.RCteam);
-                    int num2 = (owner.RCteam);
-                    if ((num == 0) || (num != num2))
-                    {
-                        hero.markDie();
-                        hero.photonView.RPC("netDie2", PhotonTargets.All, new object[] { -1, (PhotonNetwork.player.name2) + " " });
-                        FengGameManagerMKII.instance.playerKillInfoUpdate(PhotonNetwork.player, 0);
-                    }
-                }
-                else
-                {
-                    hero.markDie();
-                    hero.photonView.RPC("netDie2", PhotonTargets.All, new object[] { -1, (PhotonNetwork.player.name2) + " " });
-                    FengGameManagerMKII.instance.playerKillInfoUpdate(PhotonNetwork.player, 0);
-                }
+                int num = (PhotonNetwork.player.RCteam);
+                int num2 = (owner.RCteam);
+                if (num != 0 && num == num2) continue;
+                hero.markDie();
+                hero.photonView.RPC("netDie2", PhotonTargets.All, new object[] { -1, (PhotonNetwork.player.name2) + " " });
+                FengGameManagerMKII.instance.playerKillInfoUpdate(PhotonNetwork.player, 0);
+            }
+            else
+            {
+                hero.markDie();
+                hero.photonView.RPC("netDie2", PhotonTargets.All, new object[] { -1, (PhotonNetwork.player.name2) + " " });
+                FengGameManagerMKII.instance.playerKillInfoUpdate(PhotonNetwork.player, 0);
             }
         }
         base.StartCoroutine(this.WaitAndFade(1.5f));

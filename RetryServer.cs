@@ -47,7 +47,7 @@ public class RetryServer : UnityEngine.MonoBehaviour
     IEnumerator waitlvl()
     {
         yield return info_s =  INC.la("conected_photon_server");
-        INC.Conected();
+        INC.Connected();
         yield return new WaitForSeconds(0.2f);
         RoomInfo[] info = PhotonNetwork.GetRoomList();
         int count_con = 0;

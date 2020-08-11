@@ -201,7 +201,7 @@ public class PanelMain : MonoBehaviour
                 if (GUI.Button(multy, CyanMod.INC.la("btn_multiplayer")))
                 {
                   
-                    CyanMod.INC.Conected();
+                    CyanMod.INC.Connected();
                     connecting = INC.la("connectings");
                     is_Conecting = 1;
                     base.StartCoroutine(ConnectedS());
@@ -515,7 +515,7 @@ public class PanelMain : MonoBehaviour
         {
             connecting = INC.la("connectings");
             FengGameManagerMKII.settings[399] = 0;
-            CyanMod.INC.Conected();
+            CyanMod.INC.Connected();
             is_Conecting = 1;
             base.StartCoroutine(ConnectedS());
         }
@@ -523,7 +523,7 @@ public class PanelMain : MonoBehaviour
         {
             connecting = INC.la("connectings");
             FengGameManagerMKII.settings[399] = 1;
-            CyanMod.INC.Conected();
+            CyanMod.INC.Connected();
             is_Conecting = 1;
             base.StartCoroutine(ConnectedS());
         }
@@ -531,7 +531,7 @@ public class PanelMain : MonoBehaviour
         {
             connecting = INC.la("connectings");
             FengGameManagerMKII.settings[399] = 2;
-            CyanMod.INC.Conected();
+            CyanMod.INC.Connected();
             is_Conecting = 1;
             base.StartCoroutine(ConnectedS());
         }
@@ -539,7 +539,7 @@ public class PanelMain : MonoBehaviour
         {
             connecting = INC.la("connectings");
             FengGameManagerMKII.settings[399] = 3;
-            CyanMod.INC.Conected();
+            CyanMod.INC.Connected();
             is_Conecting = 1;
             base.StartCoroutine(ConnectedS());
         }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class InRoomRoundTimer : MonoBehaviour
 {
-    public int SecondsPerTurn = 5;
+    public const int SecondsPerTurn = 5;
     private bool startRoundWhenTimeIsSynced;
     public double StartTime;
     private const string StartTimeKey = "st";
@@ -13,8 +13,8 @@ public class InRoomRoundTimer : MonoBehaviour
     public void OnGUI()
     {
         double num = PhotonNetwork.time - this.StartTime;
-        double num2 = this.SecondsPerTurn - (num % ((double)this.SecondsPerTurn));
-        int num3 = (int)(num / ((double)this.SecondsPerTurn));
+        double num2 = SecondsPerTurn - (num % ((double)SecondsPerTurn));
+        int num3 = (int)(num / ((double)SecondsPerTurn));
         GUILayout.BeginArea(this.TextPos);
         GUILayout.Label(string.Format("elapsed: {0:0.000}", num), new GUILayoutOption[0]);
         GUILayout.Label(string.Format("remaining: {0:0.000}", num2), new GUILayoutOption[0]);

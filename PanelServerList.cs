@@ -253,7 +253,7 @@ public class PanelServerList : MonoBehaviour
             GUICyan.OnToogleCyan(INC.la("private_server"), 368, 1, 0, 50f);
             if (i != (int)FengGameManagerMKII.settings[368])
             {
-                INC.Conected();
+                INC.Connected();
             }
         }
         if (GUILayout.Button(INC.la("random_server_ps")))
@@ -338,7 +338,7 @@ public class PanelServerList : MonoBehaviour
         if (GUILayout.Button(name))
         {
             FengGameManagerMKII.settings[399] = i;
-            CyanMod.INC.Conected();
+            CyanMod.INC.Connected();
             RoomList.Clear();
         }
     }
