@@ -11,3 +11,4 @@ gen
 .idea/
 obj/x86/Debug/Assembly-CSharp.csprojAssemblyReference.cache
 obj/x86/Debug/TempPE/
+obj/Debug/Assembly-CSharp.csprojAssemblyReference.cache
